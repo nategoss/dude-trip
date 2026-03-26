@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "trips": {
+      "$year": {
+        ".read": true,
+        ".write": true
+      }
+    }
+  }
+}
