@@ -24,7 +24,7 @@ export default function AvailabilityChat({ dudeId, year, currentAvailability, on
       const result = await parseAvailability(dude.label, message, year)
       setPreview(result)
     } catch (e) {
-      setError('Gemini had a brain fart. Try again.')
+      setError(`Gemini error: ${e.message}. Try again.`)
       console.error(e)
     } finally {
       setLoading(false)

@@ -7,13 +7,17 @@ async function callGemini(prompt) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { responseMimeType: 'application/json' },
     }),
   })
-  if (!res.ok) throw new Error(`Gemini error: ${res.status}`)
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(`Gemini error ${res.status}: ${err?.error?.message || res.statusText}`)
+  }
   const data = await res.json()
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text
-  return JSON.parse(text)
+  // Strip markdown code fences if present
+  const cleaned = text.replace(/^```(?:json)?\n?/i, '').replace(/\n?```$/i, '').trim()
+  return JSON.parse(cleaned)
 }
 
 /**
