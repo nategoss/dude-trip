@@ -39,15 +39,14 @@ Return ONLY valid JSON (no markdown) in this exact shape:
 }
 
 Rules:
-- Only include dates that are explicitly mentioned or clearly implied
-- For "weekends" include Friday, Saturday, Sunday of those weekends
-- For "last two weekends in July ${year}" expand to all three days of each weekend
-- For "open in September/October" include all Fridays, Saturdays, Sundays in those months
-- For "not at all in August" do NOT include any August dates as available
+- CRITICAL: Exclusions override everything. Any date mentioned as unavailable, excluded, or "outside of" must NEVER appear in the availability map.
+- When someone says "open in [month] except [dates]" — include ONLY dates in that month that are NOT in the excluded range
+- When someone says "outside of [date range]" — do NOT include any dates within that range
 - Only include dates from ${year}
-- Only mark dates as "available" (omit unavailable ones — the calendar handles that separately)
-- A "weekend" for this group spans Thursday through Monday — always include Thu, Fri, Sat, Sun, Mon for any weekend mentioned
-- Never include Tuesday or Wednesday unless explicitly stated`
+- Only mark dates as "available" — omit any date that is unavailable, uncertain, or not mentioned
+- A "weekend" for this group spans Thursday through Monday — always include Thu, Fri, Sat, Sun, Mon
+- Never include Tuesday or Wednesday unless explicitly stated
+- Double-check your output: if a date falls within an exclusion window the person described, remove it`
 
   return callGemini(prompt)
 }
