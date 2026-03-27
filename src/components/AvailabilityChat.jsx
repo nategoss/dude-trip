@@ -9,6 +9,7 @@ export default function AvailabilityChat({ dudeId, year, currentAvailability, on
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const [preview, setPreview] = useState(null)
+  const [removedDates, setRemovedDates] = useState(new Set())
   const [error, setError] = useState(null)
   const [saved, setSaved] = useState(false)
 
@@ -22,7 +23,15 @@ export default function AvailabilityChat({ dudeId, year, currentAvailability, on
     setSaved(false)
     try {
       const result = await parseAvailability(dude.label, message, year)
-      setPreview(result)
+      // Filter out Nov/Dec before showing preview
+      const filtered = Object.fromEntries(
+        Object.entries(result.availability).filter(([date]) => {
+          const month = parseInt(date.split('-')[1], 10)
+          return month <= 10
+        })
+      )
+      setPreview({ ...result, availability: filtered })
+      setRemovedDates(new Set())
     } catch (e) {
       setError(`Gemini error: ${e.message}. Try again.`)
       console.error(e)
@@ -31,11 +40,19 @@ export default function AvailabilityChat({ dudeId, year, currentAvailability, on
     }
   }
 
+  function handleRemoveDate(date) {
+    setRemovedDates((prev) => new Set([...prev, date]))
+  }
+
   function handleSave() {
     if (!preview) return
-    onSave(preview.availability)
+    const finalAvailability = Object.fromEntries(
+      Object.entries(preview.availability).filter(([date]) => !removedDates.has(date))
+    )
+    onSave(finalAvailability)
     setSaved(true)
     setPreview(null)
+    setRemovedDates(new Set())
     setMessage('')
   }
 
@@ -46,7 +63,9 @@ export default function AvailabilityChat({ dudeId, year, currentAvailability, on
     }
   }
 
-  const previewDates = preview ? Object.keys(preview.availability).sort() : []
+  const previewDates = preview
+    ? Object.keys(preview.availability).sort().filter((d) => !removedDates.has(d))
+    : []
 
   return (
     <div className="min-h-screen bg-gray-950 p-6 flex flex-col items-center">
@@ -113,15 +132,17 @@ export default function AvailabilityChat({ dudeId, year, currentAvailability, on
               <p className="text-gray-300 text-sm italic">"{preview.interpretation}"</p>
             </div>
             <div>
-              <p className="text-gray-400 text-xs mb-2">Dates it will mark as available ({previewDates.length}):</p>
-              <div className="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto">
+              <p className="text-gray-400 text-xs mb-2">Dates it will mark as available ({previewDates.length}) — click ✕ to remove any:</p>
+              <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto">
                 {previewDates.map((d) => (
-                  <span
+                  <button
                     key={d}
-                    className={`text-xs px-2 py-0.5 rounded-full bg-gray-800 ${colors.text} border border-gray-700`}
+                    onClick={() => handleRemoveDate(d)}
+                    className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-gray-800 ${colors.text} border border-gray-700 hover:border-red-500 hover:text-red-400 transition group`}
                   >
                     {d}
-                  </span>
+                    <span className="opacity-40 group-hover:opacity-100">✕</span>
+                  </button>
                 ))}
               </div>
             </div>
