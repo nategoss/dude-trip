@@ -1,6 +1,6 @@
 export const DUDES = [
-  { id: 'buff',  label: 'Buff',  emoji: '💪' },
   { id: 'blitz', label: 'Blitz', emoji: '⚡' },
+  { id: 'buff',  label: 'Buff',  emoji: '💪' },
   { id: 'hawk',  label: 'Hawk',  emoji: '🦅' },
   { id: 'nate',  label: 'Nate',  emoji: '🤙' },
   { id: 'russ',  label: 'Russ',  emoji: '🎯' },
