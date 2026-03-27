@@ -23,10 +23,11 @@ export default function CalendarView({
 }) {
   const [showRecs, setShowRecs] = useState(true)
 
-  // Which months to show — current year, all 12 but start from current month if same year
+  // Show July–November only (Jul=6, Nov=10)
+  // If we're past July already, start from current month but cap at November
   const now = new Date()
-  const startMonth = now.getFullYear() === year ? now.getMonth() : 0
-  const months = Array.from({ length: 12 - startMonth }, (_, i) => startMonth + i)
+  const firstMonth = now.getFullYear() === year ? Math.max(now.getMonth(), 6) : 6
+  const months = Array.from({ length: 11 - firstMonth }, (_, i) => firstMonth + i)
 
   const dudeSummary = DUDES.map(({ id, label, emoji }) => {
     const count = Object.keys(dudesData?.[id]?.availability || {}).length
