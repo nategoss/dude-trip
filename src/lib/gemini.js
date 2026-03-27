@@ -46,7 +46,8 @@ Rules:
 - For "not at all in August" do NOT include any August dates as available
 - Only include dates from ${year}
 - Only mark dates as "available" (omit unavailable ones — the calendar handles that separately)
-- Focus on weekend dates (Fri/Sat/Sun) unless the person specifies weekdays`
+- A "weekend" for this group spans Thursday through Monday — always include Thu, Fri, Sat, Sun, Mon for any weekend mentioned
+- Never include Tuesday or Wednesday unless explicitly stated`
 
   return callGemini(prompt)
 }
