@@ -65,8 +65,8 @@ export async function getRecommendations(dudesAvailability, year, location) {
     .join('\n')
 
   const locationContext = location
-    ? `The group is considering going to: ${location}. Factor in the best time of year to visit this destination when scoring windows. If it is a warm/hot destination (beach, desert, tropical), late fall or winter windows are acceptable. Otherwise, strongly prefer July–October.`
-    : `No destination set yet. Strongly prefer July–October windows as the group rarely travels outside that range.`
+    ? `The group is considering going to: ${location}. Factor in the best time of year to visit this destination when scoring windows. If it is a warm/hot destination (beach, desert, tropical), late fall or winter windows are acceptable. Otherwise, strongly prefer June–October.`
+    : `No destination set yet. Strongly prefer June–October windows as the group rarely travels outside that range.`
 
   const prompt = `You are scheduling a group weekend trip for ${year}. Find the best trip windows.
 

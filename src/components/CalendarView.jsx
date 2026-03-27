@@ -26,7 +26,7 @@ export default function CalendarView({
   // Show July–November only (Jul=6, Nov=10)
   // If we're past July already, start from current month but cap at November
   const now = new Date()
-  const firstMonth = now.getFullYear() === year ? Math.max(now.getMonth(), 6) : 6
+  const firstMonth = now.getFullYear() === year ? Math.max(now.getMonth(), 5) : 5
   const months = Array.from({ length: 11 - firstMonth }, (_, i) => firstMonth + i)
 
   const dudeSummary = DUDES.map(({ id, label, emoji }) => {
