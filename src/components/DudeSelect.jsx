@@ -1,6 +1,6 @@
 import { DUDES, DUDE_COLORS } from '../lib/constants'
 
-export default function DudeSelect({ onSelect, dudesData }) {
+export default function DudeSelect({ onSelect, dudesData, onViewCalendar }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-950 p-6">
       <div className="flex flex-col items-center gap-8 w-full max-w-lg">
@@ -37,6 +37,13 @@ export default function DudeSelect({ onSelect, dudesData }) {
             )
           })}
         </div>
+
+        <button
+          onClick={onViewCalendar}
+          className="text-sm text-gray-400 hover:text-white underline underline-offset-4 transition"
+        >
+          📅 Just checking the calendar →
+        </button>
       </div>
     </div>
   )

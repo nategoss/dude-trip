@@ -129,6 +129,7 @@ export default function App() {
       <DudeSelect
         dudesData={dudesData}
         onSelect={handleSelectDude}
+        onViewCalendar={() => setView(VIEWS.CALENDAR)}
       />
     )
   }
