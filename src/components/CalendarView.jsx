@@ -12,12 +12,14 @@ export default function CalendarView({
   recsLoading,
   confirmedTrip,
   votes,
+  location,
   onToggleDate,
   onRefreshRecs,
   onConfirmTrip,
   onVote,
   onSwitchDude,
   onGoToChat,
+  onSaveLocation,
 }) {
   const [showRecs, setShowRecs] = useState(true)
 
@@ -140,6 +142,8 @@ export default function CalendarView({
                 onConfirm={onConfirmTrip}
                 votes={votes}
                 onVote={onVote}
+                location={location}
+                onSaveLocation={onSaveLocation}
               />
             </div>
           </div>

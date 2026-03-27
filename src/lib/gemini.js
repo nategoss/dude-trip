@@ -1,5 +1,5 @@
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY
-const API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${GEMINI_API_KEY}`
 
 async function callGemini(prompt) {
   const res = await fetch(API_URL, {
@@ -55,7 +55,7 @@ Rules:
  * Analyze all dudes' availability and recommend best 3-day and 4-day trip windows.
  * Returns { threeDay: [{start, end, score, availableDudes, note}], fourDay: [...] }
  */
-export async function getRecommendations(dudesAvailability, year) {
+export async function getRecommendations(dudesAvailability, year, location) {
   const summary = Object.entries(dudesAvailability)
     .map(([name, data]) => {
       const dates = Object.keys(data.availability || {}).sort()
@@ -63,12 +63,18 @@ export async function getRecommendations(dudesAvailability, year) {
     })
     .join('\n')
 
-  const prompt = `You are scheduling a group trip for ${year}. Find the best trip windows.
+  const locationContext = location
+    ? `The group is considering going to: ${location}. Factor in the best time of year to visit this destination when scoring windows. If it is a warm/hot destination (beach, desert, tropical), late fall or winter windows are acceptable. Otherwise, strongly prefer July–October.`
+    : `No destination set yet. Strongly prefer July–October windows as the group rarely travels outside that range.`
 
-Dude availability (these are the dates each person IS available):
+  const prompt = `You are scheduling a group weekend trip for ${year}. Find the best trip windows.
+
+Dude availability (dates each person IS available):
 ${summary}
 
-Find the top 3 windows for each trip length where the MOST people are available for ALL consecutive days in the window.
+${locationContext}
+
+Find the top 3 windows for each trip length where the MOST people are available for ALL consecutive days.
 
 Return ONLY valid JSON (no markdown):
 {
@@ -88,9 +94,10 @@ Return ONLY valid JSON (no markdown):
 }
 
 Rules:
-- "threeDay" windows are exactly 3 consecutive days (e.g. Fri-Sun or Sat-Mon)
-- "fourDay" windows are exactly 4 consecutive days (e.g. Thu-Sun or Fri-Mon)
-- score is a 0-1 float where 1.0 = all 6 dudes available
+- Trips happen over a weekend span: Thursday through Monday only. Never suggest midweek-only windows.
+- Valid 3-day windows: Thu–Sat, Fri–Sun, Sat–Mon
+- Valid 4-day windows: Thu–Sun, Fri–Mon
+- score is a 0-1 float where 1.0 = all 6 dudes available AND ideal travel season for the destination
 - rank by score descending
 - only suggest dates in ${year}
 - prefer windows where at least 4 of 6 dudes are available`

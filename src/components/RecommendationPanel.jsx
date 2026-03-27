@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { DUDES, DUDE_COLORS } from '../lib/constants'
 import { MONTH_NAMES } from '../lib/dates'
 
@@ -93,9 +94,17 @@ function RecCard({ rec, label, confirmedTrip, onConfirm, onVote, votes }) {
   )
 }
 
-export default function RecommendationPanel({ recommendations, loading, onRefresh, confirmedTrip, onConfirm, votes, onVote }) {
+export default function RecommendationPanel({ recommendations, loading, onRefresh, confirmedTrip, onConfirm, votes, onVote, location, onSaveLocation }) {
+  const [locationInput, setLocationInput] = useState(location || '')
+  const [editingLocation, setEditingLocation] = useState(!location)
+
   const threeDayRecs = recommendations?.threeDay || []
   const fourDayRecs = recommendations?.fourDay || []
+
+  function handleLocationSave() {
+    onSaveLocation(locationInput.trim())
+    setEditingLocation(false)
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -108,6 +117,39 @@ export default function RecommendationPanel({ recommendations, loading, onRefres
         >
           {loading ? '⏳ Loading...' : '↻ Refresh'}
         </button>
+      </div>
+
+      {/* Location */}
+      <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 flex flex-col gap-2">
+        <p className="text-gray-400 text-xs font-medium">📍 Destination (optional)</p>
+        {editingLocation ? (
+          <div className="flex gap-2">
+            <input
+              value={locationInput}
+              onChange={(e) => setLocationInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleLocationSave()}
+              placeholder="e.g. Cabo, Colorado ski trip, Smoky Mountains..."
+              className="flex-1 bg-gray-800 border border-gray-600 rounded-lg px-3 py-1.5 text-white placeholder-gray-500 text-xs focus:outline-none focus:border-indigo-500"
+            />
+            <button
+              onClick={handleLocationSave}
+              className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded-lg transition"
+            >
+              Save
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between">
+            <span className="text-white text-sm">{location}</span>
+            <button
+              onClick={() => setEditingLocation(true)}
+              className="text-gray-500 hover:text-gray-300 text-xs underline"
+            >
+              Change
+            </button>
+          </div>
+        )}
+        <p className="text-gray-600 text-xs">Gemini will factor in the best season for this destination.</p>
       </div>
 
       {loading && (

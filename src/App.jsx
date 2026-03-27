@@ -30,6 +30,7 @@ export default function App() {
   const [recsLoading, setRecsLoading] = useState(false)
   const [confirmedTrip, setConfirmedTrip] = useState(null)
   const [votes, setVotes] = useState({})
+  const [location, setLocation] = useState('')
   const [fbReady, setFbReady] = useState(false)
 
   // Subscribe to Firebase once authed
@@ -42,6 +43,7 @@ export default function App() {
       setRecommendations(data.recommendations || null)
       setConfirmedTrip(data.confirmedTrip || null)
       setVotes(data.votes || {})
+      setLocation(data.location || '')
       setFbReady(true)
     })
     return () => unsub()
@@ -87,10 +89,15 @@ export default function App() {
     })
   }
 
+  async function handleSaveLocation(newLocation) {
+    setLocation(newLocation)
+    await set(ref(db, `trips/${YEAR}/location`), newLocation)
+  }
+
   async function handleRefreshRecs() {
     setRecsLoading(true)
     try {
-      const recs = await getRecommendations(dudesData, YEAR)
+      const recs = await getRecommendations(dudesData, YEAR, location)
       await set(ref(db, `trips/${YEAR}/recommendations`), recs)
     } catch (e) {
       console.error('Recs failed:', e)
@@ -148,12 +155,14 @@ export default function App() {
         recsLoading={recsLoading}
         confirmedTrip={confirmedTrip}
         votes={votes}
+        location={location}
         onToggleDate={handleToggleDate}
         onRefreshRecs={handleRefreshRecs}
         onConfirmTrip={handleConfirmTrip}
         onVote={handleVote}
         onSwitchDude={() => setView(VIEWS.SELECT)}
         onGoToChat={() => setView(VIEWS.CHAT)}
+        onSaveLocation={handleSaveLocation}
       />
     )
   }
