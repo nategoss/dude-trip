@@ -63,8 +63,15 @@ export default function AvailabilityChat({ dudeId, year, currentAvailability, on
     }
   }
 
-  const previewDates = preview
-    ? Object.keys(preview.availability).sort().filter((d) => !removedDates.has(d))
+  const previewAvailable = preview
+    ? Object.entries(preview.availability)
+        .filter(([d, v]) => v === 'available' && !removedDates.has(d))
+        .map(([d]) => d).sort()
+    : []
+  const previewUnavailable = preview
+    ? Object.entries(preview.availability)
+        .filter(([d, v]) => v === 'unavailable' && !removedDates.has(d))
+        .map(([d]) => d).sort()
     : []
 
   return (
@@ -131,21 +138,40 @@ export default function AvailabilityChat({ dudeId, year, currentAvailability, on
               <p className="text-white font-semibold text-sm mb-1">Gemini understood:</p>
               <p className="text-gray-300 text-sm italic">"{preview.interpretation}"</p>
             </div>
-            <div>
-              <p className="text-gray-400 text-xs mb-2">Dates it will mark as available ({previewDates.length}) — click ✕ to remove any:</p>
-              <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto">
-                {previewDates.map((d) => (
-                  <button
-                    key={d}
-                    onClick={() => handleRemoveDate(d)}
-                    className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-gray-800 ${colors.text} border border-gray-700 hover:border-red-500 hover:text-red-400 transition group`}
-                  >
-                    {d}
-                    <span className="opacity-40 group-hover:opacity-100">✕</span>
-                  </button>
-                ))}
+            {previewAvailable.length > 0 && (
+              <div>
+                <p className="text-gray-400 text-xs mb-2">Marking as available ({previewAvailable.length}) — click ✕ to remove:</p>
+                <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto">
+                  {previewAvailable.map((d) => (
+                    <button
+                      key={d}
+                      onClick={() => handleRemoveDate(d)}
+                      className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-gray-800 ${colors.text} border border-gray-700 hover:border-red-500 hover:text-red-400 transition group`}
+                    >
+                      {d}
+                      <span className="opacity-40 group-hover:opacity-100">✕</span>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
+            {previewUnavailable.length > 0 && (
+              <div>
+                <p className="text-gray-400 text-xs mb-2">Marking as unavailable ({previewUnavailable.length}) — overwrites existing:</p>
+                <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto">
+                  {previewUnavailable.map((d) => (
+                    <button
+                      key={d}
+                      onClick={() => handleRemoveDate(d)}
+                      className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-gray-800 text-red-400 border border-gray-700 hover:border-red-500 line-through transition group"
+                    >
+                      {d}
+                      <span className="opacity-40 group-hover:opacity-100">✕</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="flex gap-3">
               <button
                 onClick={handleSave}

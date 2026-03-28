@@ -34,19 +34,21 @@ Return ONLY valid JSON (no markdown) in this exact shape:
 {
   "interpretation": "A friendly 1-2 sentence summary of what they said",
   "availability": {
-    "YYYY-MM-DD": "available"
+    "YYYY-MM-DD": "available",
+    "YYYY-MM-DD": "unavailable"
   }
 }
 
 Rules:
-- CRITICAL: Exclusions override everything. Any date mentioned as unavailable, excluded, or "outside of" must NEVER appear in the availability map.
-- When someone says "open in [month] except [dates]" — include ONLY dates in that month that are NOT in the excluded range
-- When someone says "outside of [date range]" — do NOT include any dates within that range
+- Mark explicitly available dates as "available"
+- Mark explicitly unavailable/excluded dates as "unavailable" — this is how updates work, it overwrites prior entries
+- Omit dates that are neither mentioned nor implied (no data = omit entirely)
+- CRITICAL: If someone says "open in [month] except [dates]" — the excepted dates must be marked "unavailable", everything else in that month "available"
+- CRITICAL: If someone says "I can't do [date]" or "remove [date]" — mark that date "unavailable"
 - Only include dates from ${year}
-- Only mark dates as "available" — omit any date that is unavailable, uncertain, or not mentioned
 - A "weekend" for this group spans Thursday through Monday — always include Thu, Fri, Sat, Sun, Mon
 - Never include Tuesday or Wednesday unless explicitly stated
-- Double-check your output: if a date falls within an exclusion window the person described, remove it`
+- Double-check: any date in an exclusion window must be marked "unavailable", not omitted`
 
   return callGemini(prompt)
 }
