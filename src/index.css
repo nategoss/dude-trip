@@ -8,3 +8,27 @@ body {
   color: #f0f0f0;
   font-family: system-ui, sans-serif;
 }
+
+/* Visible keyboard focus ring — meets WCAG 2.4.7 */
+:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Suppress focus ring for pointer users only */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Respect prefers-reduced-motion — meets WCAG 2.3.3 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

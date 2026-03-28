@@ -20,22 +20,35 @@ export default function PasswordGate({ onUnlock }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-950">
       <div className="bg-gray-900 border border-gray-700 rounded-2xl p-10 flex flex-col items-center gap-6 w-full max-w-sm">
-        <div className="text-5xl">🏕️</div>
+        <div className="text-5xl" aria-hidden="true">🏕️</div>
         <h1 className="text-2xl font-bold text-white tracking-tight">Dude Trip</h1>
         <p className="text-gray-400 text-sm text-center">Dudes only. Enter the password.</p>
-        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3">
+        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3" noValidate>
+          <label htmlFor="password" className="sr-only">Password</label>
           <input
+            id="password"
             type="password"
             value={input}
             onChange={(e) => { setInput(e.target.value); setError(false) }}
             placeholder="Password"
-            className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+            aria-describedby={error ? 'password-error' : undefined}
+            aria-invalid={error}
+            autoComplete="current-password"
             autoFocus
+            className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus-visible:ring-2 focus-visible:ring-indigo-500"
           />
-          {error && <p className="text-red-400 text-sm text-center">Wrong password, dude.</p>}
+          {error && (
+            <p
+              id="password-error"
+              role="alert"
+              className="text-red-400 text-sm text-center"
+            >
+              Wrong password, dude.
+            </p>
+          )}
           <button
             type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 rounded-lg transition"
+            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 rounded-lg transition focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 focus-visible:outline-none"
           >
             Let's go
           </button>

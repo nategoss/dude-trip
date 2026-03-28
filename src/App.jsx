@@ -6,6 +6,7 @@ import PasswordGate from './components/PasswordGate'
 import DudeSelect from './components/DudeSelect'
 import AvailabilityChat from './components/AvailabilityChat'
 import CalendarView from './components/CalendarView'
+import { ColorProfileProvider } from './contexts/ColorProfileContext'
 
 const YEAR = new Date().getFullYear()
 
@@ -120,22 +121,16 @@ export default function App() {
     await set(ref(db, `trips/${YEAR}/votes/${rec.start}/${currentDudeId}`), isUp)
   }
 
-  if (view === VIEWS.PASSWORD) {
-    return <PasswordGate onUnlock={handleUnlock} />
-  }
-
-  if (view === VIEWS.SELECT) {
-    return (
+  const content = (() => {
+    if (view === VIEWS.PASSWORD) return <PasswordGate onUnlock={handleUnlock} />
+    if (view === VIEWS.SELECT) return (
       <DudeSelect
         dudesData={dudesData}
         onSelect={handleSelectDude}
         onViewCalendar={() => setView(VIEWS.CALENDAR)}
       />
     )
-  }
-
-  if (view === VIEWS.CHAT) {
-    return (
+    if (view === VIEWS.CHAT) return (
       <AvailabilityChat
         dudeId={currentDudeId}
         year={YEAR}
@@ -144,10 +139,7 @@ export default function App() {
         onViewCalendar={() => setView(VIEWS.CALENDAR)}
       />
     )
-  }
-
-  if (view === VIEWS.CALENDAR) {
-    return (
+    if (view === VIEWS.CALENDAR) return (
       <CalendarView
         year={YEAR}
         dudesData={dudesData}
@@ -166,7 +158,8 @@ export default function App() {
         onSaveLocation={handleSaveLocation}
       />
     )
-  }
+    return null
+  })()
 
-  return null
+  return <ColorProfileProvider>{content}</ColorProfileProvider>
 }
