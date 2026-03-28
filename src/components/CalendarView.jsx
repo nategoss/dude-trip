@@ -134,7 +134,7 @@ export default function CalendarView({
         </section>
 
         {/* Main layout: calendar + recs panel */}
-        <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex flex-col lg:flex-row lg:items-start gap-6">
 
           {/* Calendar grid */}
           <section aria-label="Availability calendar" className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">

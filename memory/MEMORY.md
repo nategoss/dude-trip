@@ -1,0 +1,2 @@
+- [Dude Trip App](project_dude_trip.md) — Group trip scheduler for 6 friends, Vite+React+Firebase+Gemini, GitHub Pages
+- [Accessibility](project_accessibility.md) — WCAG 2.1 + color profiles added; context in ColorProfileContext, UI in AccessibilityMenu
